@@ -24,6 +24,10 @@ defaults:
   run:
     shell: powershell
 
+env:
+  ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
+  ALGoRepoSettings: ${{ vars.ALGoRepoSettings }}
+
 jobs:
   Initialization:
     runs-on: [ windows-latest ]
@@ -35,7 +39,7 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: BusinessCentralDemos/AL-Go-Actions/WorkflowInitialize@main
+        uses: BusinessCentralDemos/AL-Go-Actions/WorkflowInitialize@PowerPlatform
         with:
           shell: powershell
           eventId: "DO0103"
@@ -49,13 +53,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Read settings
-        uses: BusinessCentralDemos/AL-Go-Actions/ReadSettings@main
+        uses: BusinessCentralDemos/AL-Go-Actions/ReadSettings@PowerPlatform
         with:
           shell: powershell
           parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
 
       - name: Read secrets
-        uses: BusinessCentralDemos/AL-Go-Actions/ReadSecrets@main
+        uses: BusinessCentralDemos/AL-Go-Actions/ReadSecrets@PowerPlatform
         env:
           secrets: ${{ toJson(secrets) }}
         with:
@@ -74,7 +78,7 @@ jobs:
           Write-Host "deliveryContext=$deliveryContext"
 
       - name: Deliver
-        uses: BusinessCentralDemos/AL-Go-Actions/Deliver@main
+        uses: BusinessCentralDemos/AL-Go-Actions/Deliver@PowerPlatform
         env:
           deliveryContext: '${{ steps.deliveryContext.outputs.deliveryContext }}'
         with:
@@ -96,7 +100,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: BusinessCentralDemos/AL-Go-Actions/WorkflowPostProcess@main
+        uses: BusinessCentralDemos/AL-Go-Actions/WorkflowPostProcess@PowerPlatform
         with:
           shell: powershell
           eventId: "DO0103"
